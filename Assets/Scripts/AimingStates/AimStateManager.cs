@@ -8,12 +8,15 @@ public class AimStateManager : MonoBehaviour
     public AimState Aim = new AimState();
     
     [SerializeField] float mouseSense = 5;
-    private float xAxis, yAxis;
     [SerializeField] Transform camFollowPos;
-    
+     private float xAxis, yAxis;
+
+     [HideInInspector] public Animator anim;
+     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        anim = GetComponentInChildren<Animator>();
         SwitchState(Idle);
     }
 
@@ -23,6 +26,8 @@ public class AimStateManager : MonoBehaviour
         xAxis += Input.GetAxisRaw("Mouse X") * mouseSense;
         yAxis -= Input.GetAxisRaw("Mouse Y") * mouseSense;
         yAxis = Mathf.Clamp(yAxis, -80, 80);
+        
+        currentState.UpdateState(this);
     }
 
     private void LateUpdate()
