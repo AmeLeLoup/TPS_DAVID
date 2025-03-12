@@ -23,21 +23,21 @@ public class MovementStateManager : MonoBehaviour
     
     [HideInInspector] public Vector3 direction;
     [HideInInspector] public float horizontalInput, verticalInput;
-    CharacterController controller;
+    CharacterController _controller;
     
 
     [SerializeField] float groundYOffset;
     [SerializeField] LayerMask groundMask;
-    Vector3 spherePosition;
+    Vector3 _spherePosition;
 
     [SerializeField] float gravity = -9.81f;
-    private Vector3 velocity;
+    private Vector3 _velocity;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        anim = GetComponentInChildren<Animator>();
-        controller = GetComponent<CharacterController>();
+        anim = GetComponent<Animator>();
+        _controller = GetComponent<CharacterController>();
         SwitchState(Idle);
     }
 
@@ -66,27 +66,27 @@ public class MovementStateManager : MonoBehaviour
         verticalInput = Input.GetAxis("Vertical");
 
         direction = transform.forward * verticalInput + transform.right * horizontalInput;
-        controller.Move(direction.normalized * currentMoveSpeed * Time.deltaTime);
+        _controller.Move(direction.normalized * currentMoveSpeed * Time.deltaTime);
     }
 
     bool IsGrounded()
     {
-        spherePosition = new Vector3(transform.position.x, transform.position.y - groundYOffset, transform.position.z);
-        if (Physics.CheckSphere(spherePosition, controller.radius - 0.05f, groundMask)) return true;
+        _spherePosition = new Vector3(transform.position.x, transform.position.y - groundYOffset, transform.position.z);
+        if (Physics.CheckSphere(_spherePosition, _controller.radius - 0.05f, groundMask)) return true;
         return false;
     }
 
     void Gravity()
     {
-        if (!IsGrounded()) velocity.y += gravity * Time.deltaTime;
-        else if (velocity.y < 0) velocity.y = -2;
+        if (!IsGrounded()) _velocity.y += gravity * Time.deltaTime;
+        else if (_velocity.y < 0) _velocity.y = -2;
 
-        controller.Move(velocity * Time.deltaTime);
+        _controller.Move(_velocity * Time.deltaTime);
     }
 
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(spherePosition, controller.radius - 0.05f);
+        Gizmos.DrawWireSphere(_spherePosition, _controller.radius - 0.05f);
     }
 }
